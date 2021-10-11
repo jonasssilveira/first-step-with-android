@@ -2,4 +2,8 @@
     <string name="app_name">Adrresses</string>
     <string name="user_name">Jonas</string>
     <string name="remover">Remover</string>
+    <string name="nome">Nome</string>
+    <string name="telefone">Telefone</string>
+    <string name="salvar">Salvar</string>
+    <string name="e_mail">E-mail</string>
 </resources>
