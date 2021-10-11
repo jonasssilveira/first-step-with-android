@@ -12,13 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/floatingActionButton5"
+        app:layout_constraintBottom_toTopOf="@+id/activity_form_register_add_aluno"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton5"
+        android:id="@+id/activity_form_register_add_aluno"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:layout_marginBottom="4dp"
