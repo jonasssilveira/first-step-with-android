@@ -7,13 +7,14 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.barbershop.adapeters.ItemAlunoAdapter;
 import com.barbershop.model.Aluno;
 import com.barbershop.model.dao.AlunoDAO;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,15 +22,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
     private ListView listaAlunos;
-    private ArrayAdapter<Aluno> adapterView;
-
+    private ItemAlunoAdapter alunoAdapter;
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Lists de alunos");
-        generateArrayAdapter();
+        setTitle("Lista de alunos");
+        alunoAdapter = new ItemAlunoAdapter(this);
         initView();
         setOnclickItem();
     }
@@ -39,9 +39,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         if(itemId == R.id.activity_main_menu_remove) {
-            AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            Aluno aluno = AlunoDAO.listAll().get(menuInfo.position);
-            remove(aluno);
+            new AlertDialog.Builder(this)
+                    .setTitle("Removendo Aluno")
+                    .setMessage("A exclusão não pode ser reveritda, tem certeza que deseja continuar?")
+                    .setNegativeButton("Não", null)
+                    .setPositiveButton("Sim", (dialog, in)->{
+                        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                        Aluno aluno = AlunoDAO.listAll().get(menuInfo.position);
+                        remove(aluno);
+                    })
+                    .show();
         }
         return super.onContextItemSelected(item);
     }
@@ -49,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void remove(Aluno aluno){
         AlunoDAO.remove(aluno);
-        adapterView.remove(aluno);
+        alunoAdapter.remove(aluno);
     }
 
     private void setOnclickItem() {
@@ -70,19 +77,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        listaAlunos.setAdapter(adapterView);
+        listaAlunos.setAdapter(alunoAdapter);
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initView(){
         listaAlunos = findViewById(R.id.activity_main_lista_alunos);
-        listaAlunos.setAdapter(adapterView);
+        listaAlunos.setAdapter(alunoAdapter);
         FloatingActionButton fab = findViewById(R.id.activity_form_register_add_aluno);
         fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, FormRegister.class)));
         registerForContextMenu(listaAlunos);
-    }
-
-    private void generateArrayAdapter(){
-        adapterView = new ArrayAdapter(this, android.R.layout.simple_list_item_1, AlunoDAO.listAll());
     }
 
 }
